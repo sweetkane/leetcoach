@@ -2,10 +2,17 @@
   "manifest_version": 3,
   "name": "Leetcode GPT",
   "description": "Base Level Extension",
-  "permissions": ["activeTab"],
+  "host_permissions": [
+    "*://*.leetcode.com/"
+  ],
+  "permissions": ["tabs", "cookies"],
   "version": "1.0",
   "action": {
     "default_popup": "main.html",
     "default_icon": "images/lc-gpt-icon.png"
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
   }
 }
