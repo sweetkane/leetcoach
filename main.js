@@ -1,3 +1,5 @@
+document.getElementById("myButton").addEventListener("click", myFunction);
+
 function myFunction() {
     // get the button element
     const button = document.getElementsByTagName("button")[0];
