@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "Leetcode GPT",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {
+    "default_popup": "main.html",
+    "default_icon": "lc-gpt-icon.png"
+  }
+}
