@@ -4,6 +4,8 @@ A chrome extension that creates an on-demand personal coach for leetcode problem
 
 ## TODO
 - Create chrome extension boilerplate
+https://developer.chrome.com/docs/extensions/mv3/messaging/#simple
+
 
 ## Workflow
 - When extension is activated:
