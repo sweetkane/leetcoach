@@ -3,23 +3,23 @@ document.getElementById("myButton").addEventListener("click", myFunction);
 async function myFunction() {
 
   const button = document.getElementsByTagName("button")[0];
+  const parent = button.parentNode;
 
   const currentTab = await getCurrentTab();
   const currentTabUrl = currentTab.url;
   const parsedUrl = parseLeetcodeUrl(currentTabUrl);
   if (parsedUrl === "invalid url") {
     const message = document.createTextNode("Active tab is not a leetcode problem");
-    const parent = button.parentNode;
     parent.replaceChild(message, button);
     return;
   }
-
-  cookies = await getCookies();
-
+  console.log("1");
+  // cookies = await getCookies();
+  console.log("2");
 
 
   const message = document.createTextNode(currentTabUrl);
-  const parent = button.parentNode;
+
   parent.replaceChild(message, button);
 }
 
@@ -56,10 +56,10 @@ async function getRelevantText(problemBaseUrl) {
 async function getCookies() {
   // 1. Send a message to the service worker requesting the user's data
 
-  chrome.runtime.sendMessage('get-cookies', (response) => {
-    // 3. Got an asynchronous response with the data from the service worker
-    console.log('received cookies', response);
-
-  });
+  chrome.runtime.connect();
+  const response = await chrome.runtime.sendMessage({type: "cookies"});
+  // do something with response here, not outside the function
+  console.log(response);
+  return response;
 }
 

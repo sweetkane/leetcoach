@@ -12,7 +12,20 @@
     "default_icon": "images/lc-gpt-icon.png"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  }
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://leetcode.com/problems/*"
+      ],
+      "js": [
+        "scripts/jquery-3.6.3.js",
+        "content.js",
+        "scripts/prompt.js",
+        "scripts/interface.js"
+      ],
+      "run_at": "document_end"
+    }
+  ]
 }
