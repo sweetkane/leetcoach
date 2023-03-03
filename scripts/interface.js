@@ -12,7 +12,7 @@ async function sendChatAndGetResponse(userChat) {
 
 async function prompt_ai(prompt) {
     const api_key = get_api_key();
-    const url = "https://api.openai.com/v1/completions"
+    const url = "https://api.openai.com/v1/chat/completions"
     const response = await fetch(url,
         {
             headers: {
@@ -21,7 +21,7 @@ async function prompt_ai(prompt) {
             },
             method: "POST",
             body: JSON.stringify({
-                "model": "text-davinci-003",
+                "model": "gpt-3.5-turbo-0301",
                 "prompt": prompt,
                 "max_tokens": 2000,
                 "temperature": 1
@@ -39,8 +39,9 @@ async function prompt_ai(prompt) {
 }
 
 function get_api_key() {
-    jQuery.get("key.txt", function(txt) {
-        console.log(txt);
-        return txt;
-    }, "text");
+    return "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"
+    // jQuery.get("key.txt", function(txt) {
+    //     console.log("key",txt);
+    //     return txt;
+    // }, "text");
 }

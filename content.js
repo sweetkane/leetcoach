@@ -42,17 +42,19 @@ function pollDOM () {
 function createChatInterface() {
 
     const container = document.createElement("div");
-    container.className = "flex w-full overflow-y-auto flex-col";
-    //container.style = "height: 300px; width: 100%; overflow-y: scroll;"
-
+    //container.className = "flex w-full overflow-y-auto flex-col";
+    //container.style = "padding: 10px; overflow-y: scroll;";
+    container.style = "height: 300px; width: 100%; overflow-y: hidden; position: relative;"
+    // container.style = "padding-bottom: 10px;";
     const textbox = document.createElement("div");
-    // textbox.style = "height: 50%;";
+    textbox.className = "vs-dark";
+    textbox.style = "overflow-y: scroll; height: calc(100% - 75px); ";
     textbox.innerHTML  = "Chat with the coach!<br /><br />";
 
-    var input = document.createElement("input");
+    const input = document.createElement("input");
     input.type = "textarea";
-    input.className = "mt-auto px-5 pt-8 pb-2.5";
-    input.style = "position: absolute; bottom: 0;";
+    //input.className = "mt-auto px-5 pt-8 pb-2.5";
+    input.style = "position: absolute; bottom: 50px; width: 90%; margin: 0px;";
     input.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
             const userText = event.target.value;
@@ -61,6 +63,8 @@ function createChatInterface() {
             submitUserTextEvent(textbox, userText);
         }
     });
+
+    // const input = createElementFromHTML(inputHtml);
 
 
     container.append(textbox, input);
@@ -113,5 +117,24 @@ jQuery.resizable = function (resizerID, vOrH) {
         });
     });
 }
+
+const inputHtml = `
+<div style="position: relative; bottom: 5px; width: calc(100% - 25px);" >
+   <div>
+      <div class="relative">
+         <div class="flex w-full flex-col rounded-[13px] bg-layer-2 dark:bg-dark-layer-2 shadow-level1 dark:shadow-dark-level1">
+            <textarea data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" placeholder="Type question here..." class="w-full resize-none bg-transparent p-4 text-md outline-0 outline-none dark:bg-transparent min-h-[80px] placeholder:text-label-4 dark:placeholder:text-dark-label-4 inherit" rows="1" style="overflow: hidden; overflow-wrap: break-word; height: 80px;"></textarea>
+            <div class="relative box-content flex h-8 items-end p-4" style="width: 100%;">
+
+                <div class="flex items-center gap-4" style="position: absolute; right: 50px;" >
+                    <button class="font-medium items-center whitespace-nowrap focus:outline-none inline-flex transition-colors cursor-pointer py-[5px] px-3 rounded-lg bg-green-s dark:bg-dark-green-s hover:bg-green-3 dark:hover:bg-dark-green-3 text-white dark:text-dark-white opacty-100" disabled="">Send</button>
+                </div>
+            </div>
+         </div>
+         <div class="absolute box-content rounded-lg z-base-1 hidden"></div>
+      </div>
+   </div>
+</div>
+`
 
 pollDOM();
