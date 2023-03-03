@@ -9,10 +9,15 @@ async function sendChatAndGetResponse(userChat) {
 
 
 // OPENAI API HANDLING
+// TODO start transition to gpt-3.5-turbo model
+// https://platform.openai.com/docs/guides/chat/introduction
+async function prompt_chat(messages) {
+    ///// TODO
+}
 
 async function prompt_ai(prompt) {
     const api_key = get_api_key();
-    const url = "https://api.openai.com/v1/chat/completions"
+    const url = "https://api.openai.com/v1/completions"
     const response = await fetch(url,
         {
             headers: {
@@ -21,7 +26,7 @@ async function prompt_ai(prompt) {
             },
             method: "POST",
             body: JSON.stringify({
-                "model": "gpt-3.5-turbo-0301",
+                "model": "text-davinci-003",
                 "prompt": prompt,
                 "max_tokens": 2000,
                 "temperature": 1
