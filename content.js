@@ -1,11 +1,6 @@
-
-const rightContainerSelector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w"
-const rightTopSelector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w > div.relative.flex.h-full.flex-col"
 const resizeIconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 2" width="14" height="2" fill="currentColor" class="transition text-gray-3 dark:text-dark-gray-3 group-hover:text-white dark:group-hover:text-white"><circle r="1" transform="matrix(-1 0 0 1 1 1)"></circle><circle r="1" transform="matrix(-1 0 0 1 7 1)"></circle><circle r="1" transform="matrix(-1 0 0 1 13 1)"></circle></svg>`
-
 const div_a_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w";
 const div_b_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w > div.relative.flex.h-full.flex-col";
-
 
 
 function pollDOM () {
@@ -22,10 +17,8 @@ function pollDOM () {
         div_a1.id = "div_a1";
         div_a1.style = "height: 70%;";
 
-
         div_a1.appendChild(div_b);
         div_a.appendChild(div_a1);
-
 
         const resizeBar = createResizeBar();
         const chatInterface = createChatInterface();
@@ -47,14 +40,19 @@ function createChatInterface() {
     container.style = "height: 300px; width: 100%; overflow-y: hidden; position: relative;"
     // container.style = "padding-bottom: 10px;";
     const textbox = document.createElement("div");
-    textbox.className = "vs-dark";
-    textbox.style = "overflow-y: scroll; height: calc(100% - 75px); ";
-    textbox.innerHTML  = "Chat with the coach!<br /><br />";
+    textbox.className = "monaco-editor-background";
+    textbox.style = "display: block; overflow-y: scroll; height: calc(100% - 75px); padding: 15px; ";
+    textbox.innerHTML  = "Chat with the coach:<br /><br />";
+    textbox.addEventListener('DOMSubtreeModified', () => {
+        textbox.scrollTop = textbox.scrollHeight;
+      });
 
+    const form = document.createElement("div");
+    form.style = "position: absolute; width: 100%; bottom: 30px;";
     const input = document.createElement("input");
     input.type = "textarea";
-    //input.className = "mt-auto px-5 pt-8 pb-2.5";
-    input.style = "position: absolute; bottom: 50px; width: 90%; margin: 0px;";
+    input.style = "width: 80%; padding-left: 15px; "
+
     input.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
             const userText = event.target.value;
@@ -64,16 +62,27 @@ function createChatInterface() {
         }
     });
 
-    // const input = createElementFromHTML(inputHtml);
+    const send = document.createElement("button");
+    send.style = "margin: 15px; "
+    send.textContent = "Send";
+    send.onclick = function(){
+        const userText = input.value;
+        input.value = '';
+
+        submitUserTextEvent(textbox, userText);
+    }
+    form.append(input, send);
 
 
-    container.append(textbox, input);
+    container.append(textbox, form);
     return container
 }
 async function submitUserTextEvent(textbox, userText) {
-    textbox.innerHTML += "User: " + userText + "<br /><br />";
-    responseText = await sendChatAndGetResponse(userText);
-    textbox.innerHTML += "Coach: " + responseText + "<br /><br />";
+    formatText(textbox, userText, "User");
+    // textbox.innerHTML += "User: " + userText + "<br /><br />";
+    const responseText = await sendChatAndGetResponse(userText);
+    formatText(textbox, responseText, "Coach");
+    // textbox.innerHTML += "Coach: " + responseText + "<br /><br />";
 }
 
 
@@ -118,23 +127,48 @@ jQuery.resizable = function (resizerID, vOrH) {
     });
 }
 
-const inputHtml = `
-<div style="position: relative; bottom: 5px; width: calc(100% - 25px);" >
-   <div>
-      <div class="relative">
-         <div class="flex w-full flex-col rounded-[13px] bg-layer-2 dark:bg-dark-layer-2 shadow-level1 dark:shadow-dark-level1">
-            <textarea data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" placeholder="Type question here..." class="w-full resize-none bg-transparent p-4 text-md outline-0 outline-none dark:bg-transparent min-h-[80px] placeholder:text-label-4 dark:placeholder:text-dark-label-4 inherit" rows="1" style="overflow: hidden; overflow-wrap: break-word; height: 80px;"></textarea>
-            <div class="relative box-content flex h-8 items-end p-4" style="width: 100%;">
-
-                <div class="flex items-center gap-4" style="position: absolute; right: 50px;" >
-                    <button class="font-medium items-center whitespace-nowrap focus:outline-none inline-flex transition-colors cursor-pointer py-[5px] px-3 rounded-lg bg-green-s dark:bg-dark-green-s hover:bg-green-3 dark:hover:bg-dark-green-3 text-white dark:text-dark-white opacty-100" disabled="">Send</button>
-                </div>
-            </div>
-         </div>
-         <div class="absolute box-content rounded-lg z-base-1 hidden"></div>
-      </div>
-   </div>
-</div>
-`
+function formatText(element, text, id) {
+    element.innerHTML += "<b>" + id + ":" + "</b> ";
+    const lines = text.split("\n");
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (line.startsWith("```")) {
+        // Handle code block
+        const code = document.createElement("code");
+        const language = line.slice(3);
+        if (language) {
+          code.className = `language-${language}`;
+        }
+        let codeLines = [];
+        for (let j = i + 1; j < lines.length; j++) {
+          const codeLine = lines[j];
+          if (codeLine.startsWith("```")) {
+            i = j;
+            break;
+          } else {
+            codeLines.push(codeLine);
+          }
+        }
+        code.textContent = codeLines.join("\n");
+        const pre = document.createElement("pre");
+        pre.appendChild(code);
+        element.appendChild(pre);
+        continue;
+      } else {
+        // Handle normal text
+        const textNode = document.createTextNode(line);
+        element.appendChild(textNode);
+      }
+      if (i < lines.length - 1) {
+        // Add line break
+        element.appendChild(document.createElement("br"));
+      }
+    }
+    // Add horizontal line
+    const hr = document.createElement("hr");
+    hr.style = "margin-top: 10px; margin-bottom: 10px;"
+    element.appendChild(hr);
+    return element;
+}
 
 pollDOM();
