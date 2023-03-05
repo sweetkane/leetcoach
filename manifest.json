@@ -1,18 +1,24 @@
 {
   "manifest_version": 3,
-  "name": "Leetcode GPT",
-  "description": "Base Level Extension",
+  "name": "Leetcoach",
+  "description": "Leetcoach adds a chat window to Leetcode, allowing you to discuss your problem with chatGPT.",
   "host_permissions": [
     "*://*.leetcode.com/"
   ],
-  "permissions": ["tabs", "cookies"],
+  "permissions": ["tabs"],
   "version": "1.0",
   "action": {
-    "default_popup": "main.html",
-    "default_icon": "images/lc-gpt-icon.png"
+    "default_popup": "popup.html",
+    "default_icon": "images/leetcoach16.png"
+  },
+  "icons": {
+    "16": "images/leetcoach16.png",
+    "32": "images/leetcoach32.png",
+    "48": "images/leetcoach48.png",
+    "128": "images/leetcoach128.png"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "scripts/background.js"
   },
   "content_scripts": [
     {
@@ -21,7 +27,7 @@
       ],
       "js": [
         "scripts/jquery-3.6.3.js",
-        "content.js",
+        "scripts/content.js",
         "scripts/prompt.js",
         "scripts/interface.js"
       ],
