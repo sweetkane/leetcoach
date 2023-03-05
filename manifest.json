@@ -23,7 +23,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://leetcode.com/problems/*"
+        "https://leetcode.com/problems/*/description/"
       ],
       "js": [
         "scripts/jquery-3.6.3.js",
