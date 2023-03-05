@@ -1,16 +1,4 @@
-# lc-gpt
-## Description
-A chrome extension that creates an on-demand personal coach for leetcode problems
+# Leetcoach
 
-## TODO
-- Create chrome extension boilerplate
-https://developer.chrome.com/docs/extensions/mv3/messaging/#simple
-
-
-## Workflow
-- When extension is activated:
-- Grab active tab url
-  - Use that to get problem description and solution url
-  - Use that to get relevant text
-- Pass relevant text to chatGPT with useful prompt
-- Offer "hint" or "discuss" options
+### Description
+Leetcoach is a Chrome Extension that brings ChatGPT to Leetcode. It automatically sends chatGPT your problem statement and current solution, and adds a chat window to the bottom of Leetcode for easy access.
