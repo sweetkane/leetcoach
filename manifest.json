@@ -5,7 +5,7 @@
   "host_permissions": [
     "*://*.leetcode.com/"
   ],
-  "permissions": ["tabs"],
+  "permissions": [],
   "version": "0.0.0.1",
   "action": {
     "default_popup": "popup.html",
