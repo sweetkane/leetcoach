@@ -32,7 +32,7 @@ function pollDOM () {
     }
 }
 
-
+// using resize bar disables the form repositioning
 function createChatInterface() {
 
     const container = document.createElement("div");
@@ -42,17 +42,6 @@ function createChatInterface() {
     const textbox = document.createElement("div");
     textbox.className = "monaco-editor-background";
     textbox.style = "display: block; overflow-y: scroll; height: calc(100% - 61px); padding: 15px; ";
-
-    // document.addEventListener("fullscreenchange", function(event) {
-    //   if (document.fullscreenElement) {
-    //     console.log('Fullscreen is currently active.');
-    //     textbox.style.height = "calc(100% - 45px)";
-    //   } else {
-    //     console.log('Fullscreen is not currently active.');
-    //     textbox.style.height = "calc(100% - 90px)";
-    //   }
-    // });
-
     //// HEADER
     const titleText = document.createElement("div");
     titleText.id = "titleText";
@@ -68,10 +57,6 @@ function createChatInterface() {
     titleText.append(div1, div2);
 
     textbox.appendChild(titleText);
-    // // const hr = document.createElement("hr");
-    // // hr.style = "margin-top: 10px;"
-    // // textbox.appendChild(hr);
-    // ////
     textbox.addEventListener('DOMSubtreeModified', () => {
         textbox.scrollTop = textbox.scrollHeight;
     });
@@ -99,45 +84,20 @@ function createChatInterface() {
     send.onclick = function(){
         const userText = input.value;
         input.value = '';
-
         submitUserTextEvent(textbox, userText);
     }
     ////
     form.append(input, send);
-
-    // resize factor is not equivalent to window resize
-    // form is still offscreen if we start with resized window
-    // window.addEventListener('resize', () => {
-    //   // const aboveHeight = document.querySelector('.above').offsetHeight;
-    //   const windowHeight = window.innerHeight;
-    //   const dif = windowStartingHeight - windowHeight;
-    //   console.log("resize. dif=", dif);
-    //   const currentHeight = textbox.style.height;
-    //   textbox.style.height = `calc(100% - ${dif+90}px)`;
-    //   // below.style.height = `calc(100% - ${aboveHeight}px)`;
-    //   console.log("expected:",`calc(100% - 90px- ${dif}px)`, "actual:",textbox.style.height);
-    // });
-    // //
-
-    // const div_a0 = document.createElement("div");
-    // div_a0.style = "position:fixed; bottom:0; right:0; height:calc(100%)";
-    // div_a0.append(container);
-    // container.append(textbox, form);
-    // return div_a0
-
     container.append(textbox, form);
     return container
 }
 async function submitUserTextEvent(textbox, userText) {
-    const titleText = textbox.querySelector('#titleText'); // Find the child div with id "titleText"
-    if (titleText) { // If it exists, remove it
+    const titleText = textbox.querySelector('#titleText');
+    if (titleText) {
       titleText.remove();
     }
-
     formatText(textbox, userText, "User");
-
     const infoClosure = (text) => printInfo(textbox, text);
-
     const responseText = await sendChatAndGetResponse(userText, infoClosure);
     formatText(textbox, responseText, "Coach");
 }
@@ -174,8 +134,16 @@ jQuery.resizable = function (resizerID, vOrH) {
             var end = e.pageY;
             if (vOrH == 'v') end = e.pageX;
             if (vOrH == 'h') {
-                jQuery('#' + resizerID).prev().height(jQuery('#' + resizerID).prev().height() + (end - start));
-                jQuery('#' + resizerID).next().height(jQuery('#' + resizerID).next().height() - (end - start));
+              const codeContainer = jQuery('#' + resizerID).prev();
+              codeContainer.height(codeContainer.height() + (end - start));
+              const codeHeight = codeContainer.height() / codeContainer.parent().height() * 100;
+              codeContainer.css('height', codeHeight + '%');
+
+              const chatContainer = jQuery('#' + resizerID).next()
+              chatContainer.height(chatContainer.height() - (end - start));
+              const chatHeight = chatContainer.height() / chatContainer.parent().height() * 100;
+              chatContainer.css('height', chatHeight + '%');
+
             } else {
                 jQuery('#' + resizerID).prev().width(jQuery('#' + resizerID).prev().width() + (end - start));
                 jQuery('#' + resizerID).next().width(jQuery('#' + resizerID).next().width() - (end - start));
@@ -203,7 +171,7 @@ function formatText(element, text, id) {
     space.style = "margin-top: 10px";
     element.appendChild(space);
     element.appendChild(nametag(id));
-    element.innerHTML += "<b> </b> ";
+    element.innerHTML += "<b> </b>";
     const lines = text.split("\n");
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
