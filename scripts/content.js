@@ -2,7 +2,6 @@ const resizeIconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 
 const div_a_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w";
 const div_b_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w > div.relative.flex.h-full.flex-col";
 
-
 function pollDOM () {
 
     const div_a = document.querySelector(div_a_selector);
@@ -35,35 +34,53 @@ function pollDOM () {
 function createChatInterface() {
 
     const container = document.createElement("div");
-    //container.className = "flex w-full overflow-y-auto flex-col";
-    //container.style = "padding: 10px; overflow-y: scroll;";
-    container.style = "height: 300px; width: 100%; overflow-y: hidden; position: relative;"
-    // container.style = "padding-bottom: 10px;";
+
+    container.style = "height: 300px; width: 100%; overflow-y: hidden; position: relative;";
+    // TEXTBOX
     const textbox = document.createElement("div");
     textbox.className = "monaco-editor-background";
-    textbox.style = "display: block; overflow-y: scroll; height: calc(100% - 75px); padding: 15px; ";
-    textbox.innerHTML  = "Chat with the coach:<br /><br />";
+    textbox.style = "display: block; overflow-y: scroll; height: calc(100% - 90px); padding: 15px; ";
+    document.addEventListener("fullscreenchange", function(event) {
+      if (document.fullscreenElement) {
+        console.log('Fullscreen is currently active.');
+        textbox.style.height = "calc(100% - 45px)";
+      } else {
+        console.log('Fullscreen is not currently active.');
+        textbox.style.height = "calc(100% - 90px)";
+      }
+    });
+    //// HEADER
+    const centeredText = document.createElement("span");
+    centeredText.className = "mr-2 text-lg font-medium text-label-1 dark:text-dark-label-1";
+    centeredText.style = "display: block; text-align: center;";
+    centeredText.innerHTML = "Leetcoach Chat";
+    textbox.appendChild(centeredText);
+    const hr = document.createElement("hr");
+    hr.style = "margin-top: 10px;"
+    textbox.appendChild(hr);
+    ////
     textbox.addEventListener('DOMSubtreeModified', () => {
         textbox.scrollTop = textbox.scrollHeight;
-      });
-
+    });
+    // FORM
     const form = document.createElement("div");
-    form.style = "position: absolute; width: 100%; bottom: 30px;";
+    form.style = "position: absolute; width: 100%; ";
+    //// INPUT
     const input = document.createElement("input");
     input.type = "textarea";
-    input.style = "width: 80%; padding-left: 15px; "
-
+    input.className = "rounded py-1.5";
+    input.style = "width: 80%; padding-left: 5px; margin-top: 10px; position: absolute; top: 0;"
     input.addEventListener('keyup', function(event) {
         if (event.key === 'Enter') {
             const userText = event.target.value;
             event.target.value = '';
-
             submitUserTextEvent(textbox, userText);
         }
     });
-
+    //// SEND
     const send = document.createElement("button");
-    send.style = "margin: 15px; "
+    send.className = "px-3 py-1.5 font-medium items-center whitespace-nowrap transition-all focus:outline-none inline-flex bg-fill-3 dark:bg-dark-fill-3 hover:bg-fill-2 dark:hover:bg-dark-fill-2 text-label-2 dark:text-dark-label-2 rounded-lg"
+    send.style = "position: absolute; right: calc(20% - 85px); top: 0; margin: 10px;  "
     send.textContent = "Send";
     send.onclick = function(){
         const userText = input.value;
@@ -71,23 +88,25 @@ function createChatInterface() {
 
         submitUserTextEvent(textbox, userText);
     }
+    ////
     form.append(input, send);
-
-
+    //
     container.append(textbox, form);
     return container
 }
 async function submitUserTextEvent(textbox, userText) {
     formatText(textbox, userText, "User");
-    // textbox.innerHTML += "User: " + userText + "<br /><br />";
-    const responseText = await sendChatAndGetResponse(userText);
+
+    const infoClosure = (text) => printInfo(textbox, text);
+
+    const responseText = await sendChatAndGetResponse(userText, infoClosure);
     formatText(textbox, responseText, "Coach");
-    // textbox.innerHTML += "Coach: " + responseText + "<br /><br />";
 }
 
 
 function createResizeBar() {
     const resizeBar = document.createElement("div");
+    resizeBar.className = "transition hover:bg-blue-s dark:hover:bg-dark-blue-s";
     resizeBar.id = "leetcoachResizeBar";
     resizeBar.style = "cursor: row-resize; height: 8px; width: 100%; float: left; display: flex; justify-content: center; align-items: center;"
 
@@ -127,8 +146,24 @@ jQuery.resizable = function (resizerID, vOrH) {
     });
 }
 
+function printInfo(textbox, text) {
+  const textDiv = document.createElement("div");
+  textDiv.style = "margin-top: 5px;";
+  textDiv.className = "text-xs text-gray-6 dark:text-dark-gray-6";
+  textDiv.innerHTML += text;
+
+  const hr = document.createElement("hr");
+  hr.style = "margin-top: 5px;";
+
+  textbox.append(textDiv,hr);
+}
+
 function formatText(element, text, id) {
-    element.innerHTML += "<b>" + id + ":" + "</b> ";
+
+    const space = document.createElement("div");
+    space.style = "margin-top: 10px";
+    element.appendChild(space);
+    element.innerHTML += "<b>[" + id + "]:" + "</b> ";
     const lines = text.split("\n");
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
@@ -157,6 +192,7 @@ function formatText(element, text, id) {
       } else {
         // Handle normal text
         const textNode = document.createTextNode(line);
+
         element.appendChild(textNode);
       }
       if (i < lines.length - 1) {
@@ -166,7 +202,7 @@ function formatText(element, text, id) {
     }
     // Add horizontal line
     const hr = document.createElement("hr");
-    hr.style = "margin-top: 10px; margin-bottom: 10px;"
+    hr.style = "margin-top: 10px;"
     element.appendChild(hr);
     return element;
 }

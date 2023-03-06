@@ -6,7 +6,7 @@
     "*://*.leetcode.com/"
   ],
   "permissions": ["tabs"],
-  "version": "1.0",
+  "version": "0.0.0.1",
   "action": {
     "default_popup": "popup.html",
     "default_icon": "images/leetcoach16.png"
@@ -23,6 +23,7 @@
   "content_scripts": [
     {
       "matches": [
+        "https://leetcode.com/problems/*/",
         "https://leetcode.com/problems/*/description/"
       ],
       "js": [

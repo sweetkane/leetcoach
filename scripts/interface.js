@@ -1,8 +1,15 @@
 const chat = new chatmessages();
-async function sendChatAndGetResponse(userChat) {
-    if (chat.isnull) chat.init();
-    chat.update_solution_progress();
+
+async function sendChatAndGetResponse(userChat, infoClosure) {
+    if (chat.isnull) {
+        infoClosure("[Sending problem description]");
+        chat.init();
+    }
     chat.add_user_message(userChat);
+    const solutionUpdated = chat.update_solution_progress();
+    if (solutionUpdated) {
+        infoClosure("[Sending current solution]");
+    }
     const responseText = await prompt_chat(chat.messages);
     if (responseText === null) {
         return "[ Error ] Please retry shortly";
@@ -14,8 +21,9 @@ async function sendChatAndGetResponse(userChat) {
 
 }
 
-// Please do not try to exploit this lambda url. Thanks!
+
 async function prompt_chat(messages) {
+    // Please do not exploit :^)
     const url = "https://unsj2incakms24tnc3xhp4hk4y0gwivv.lambda-url.us-east-2.on.aws/"
     const response = await fetch(url,
         {

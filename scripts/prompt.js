@@ -27,7 +27,9 @@ class chatmessages {
         if (new_progress != this.solution_progress) {
             this.solution_progress = new_progress;
             this.messages.push({"role": "system", "content": this.solution_progress});
+            return true;
         }
+        else return false;
     }
 }
 
