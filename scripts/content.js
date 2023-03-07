@@ -1,29 +1,40 @@
 const resizeIconHtml = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 2" width="14" height="2" fill="currentColor" class="transition text-gray-3 dark:text-dark-gray-3 group-hover:text-white dark:group-hover:text-white"><circle r="1" transform="matrix(-1 0 0 1 1 1)"></circle><circle r="1" transform="matrix(-1 0 0 1 7 1)"></circle><circle r="1" transform="matrix(-1 0 0 1 13 1)"></circle></svg>`
 const div_a_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w";
 const div_b_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w > div.relative.flex.h-full.flex-col";
-const windowStartingHeight = window.innerHeight;
+const console_button_selector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-secondary-w > div > div:nth-child(3) > div > div > div > div > div > div.mr-2.flex.flex-1.flex-nowrap.items-center.space-x-4 > button";
+let codeHeightSetting = "70%";
+let chatHeightSetting = "30%";
+
 function pollDOM () {
 
     const div_a = document.querySelector(div_a_selector);
     const div_b = document.querySelector(div_b_selector);
+    const console_button = document.querySelector(console_button_selector);
 
-    if (div_a !== null && div_b !== null) {
+    if (div_a !== null && div_b !== null && console_button != null) {
         console.log("got it");
         div_a.id = "div_a";
         div_b.id = "div_b";
 
         const div_a1 = document.createElement("div");
         div_a1.id = "div_a1";
-        div_a1.style = "height: 70%;";
+        div_a1.style = "height: 100%;";
 
         div_a1.appendChild(div_b);
         div_a.appendChild(div_a1);
 
         const resizeBar = createResizeBar();
         const chatInterface = createChatInterface();
+        const showHideButton = createShowHideButton(
+          div_a1, chatInterface, resizeBar
+        );
+
+
 
         div_a.append(resizeBar, chatInterface);
+        console_button.insertAdjacentElement("afterend", showHideButton);
         jQuery.resizable("leetcoachResizeBar", "h");
+
 
 
     } else {
@@ -37,7 +48,7 @@ function createChatInterface() {
 
     const container = document.createElement("div");
 
-    container.style = "height: 30%; width: 100%; overflow-y: hidden; position: relative;";
+    container.style = "height: 00%; width: 100%; overflow-y: hidden; position: relative;";
     // TEXTBOX
     const textbox = document.createElement("div");
     textbox.className = "monaco-editor-background";
@@ -107,7 +118,7 @@ function createResizeBar() {
     const resizeBar = document.createElement("div");
     resizeBar.className = "transition hover:bg-blue-s dark:hover:bg-dark-blue-s";
     resizeBar.id = "leetcoachResizeBar";
-    resizeBar.style = "cursor: row-resize; height: 8px; width: 100%; float: left; display: flex; justify-content: center; align-items: center;"
+    resizeBar.style = "cursor: row-resize; height: 0px; width: 100%; float: left; display: flex; justify-content: center; align-items: center;"
 
     const resizeIcon = createElementFromHTML(resizeIconHtml);
     resizeBar.append(resizeIcon);
@@ -138,11 +149,13 @@ jQuery.resizable = function (resizerID, vOrH) {
               codeContainer.height(codeContainer.height() + (end - start));
               const codeHeight = codeContainer.height() / codeContainer.parent().height() * 100;
               codeContainer.css('height', codeHeight + '%');
+              codeHeightSetting = codeHeight + '%';
 
               const chatContainer = jQuery('#' + resizerID).next()
               chatContainer.height(chatContainer.height() - (end - start));
               const chatHeight = chatContainer.height() / chatContainer.parent().height() * 100;
               chatContainer.css('height', chatHeight + '%');
+              chatHeightSetting = chatHeight + "%";
 
             } else {
                 jQuery('#' + resizerID).prev().width(jQuery('#' + resizerID).prev().width() + (end - start));
@@ -225,6 +238,44 @@ function nametag(text) {
   }
   nametag.innerText = text;
   return nametag;
+}
+
+let chatIsOpen = false;
+function createShowHideButton(codeDiv, chatDiv, resizeDiv) {
+  const button = document.createElement("button");
+  button.className = "px-3 py-1.5 font-medium items-center whitespace-nowrap transition-all focus:outline-none inline-flex bg-fill-3 dark:bg-dark-fill-3 hover:bg-fill-2 dark:hover:bg-dark-fill-2 text-label-2 dark:text-dark-label-2 rounded-lg pl-3 pr-2";
+  button.innerText = "LeetCoach";
+
+  const innerDiv = document.createElement("div");
+  innerDiv.className = "ml-1 transform transition";
+
+  const svgOpenHtml = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor" class="fill-gray-6 text-[20px] dark:fill-dark-gray-6">';
+  const pathHtml = '<path fill-rule="evenodd" d="M16.293 14.707a1 1 0 001.414-1.414l-5-5a1 1 0 00-1.414 0l-5 5a1 1 0 101.414 1.414L12 10.414l4.293 4.293z" clip-rule="evenodd"></path>';
+  const svgCloseHtml = '</svg>';
+  const svg = createElementFromHTML(svgOpenHtml+pathHtml+svgCloseHtml);
+
+  innerDiv.append(svg);
+  button.append(innerDiv);
+
+  button.onclick = function() {
+    if (chatIsOpen) {
+      // proceed to close chat
+      innerDiv.className = "ml-1 transform transition rotate-180";
+      codeDiv.style.height = "100%";
+      chatDiv.style.height = "0%";
+      resizeDiv.style.height = "0px";
+    }
+    else {
+      // proceed to open chat
+      innerDiv.className = "ml-1 transform transition";
+      codeDiv.style.height = codeHeightSetting;
+      chatDiv.style.height = chatHeightSetting;
+      resizeDiv.style.height = "8px";
+    }
+    chatIsOpen = !chatIsOpen;
+  }
+  return button;
+
 }
 
 pollDOM();
