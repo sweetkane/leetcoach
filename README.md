@@ -4,7 +4,7 @@
 Leetcoach is a Chrome Extension that brings ChatGPT to Leetcode so users can seamlessly discuss the problem and their solution.
 
 ### Features:
-- Sends problem statement once, and resends current solution anytime the user asks a question after making a change.
+- Sends problem statement once, and resends the current solution when it is changed.
 - Chat window is resizable and works in both light/dark modes.
 
 ### Example:
