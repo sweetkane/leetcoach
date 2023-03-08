@@ -50,10 +50,6 @@ const system_solution_progress =
 `
 
 // READ SITE
-const problemTextSelector = "#qd-content > div.h-full.flex-col.ssg__qd-splitter-primary-w > div > div > div > div.flex.h-full.w-full.overflow-y-auto > div > div > div:nth-child(3) > div"
-const solutionTextSelector = "#editor > div.flex.flex-1.flex-col.overflow-hidden > div.flex-1.overflow-hidden > div > div > div.overflow-guard > div.monaco-scrollable-element.editor-scrollable.vs-dark > div.lines-content.monaco-editor-background > div.view-lines.monaco-mouse-cursor-text"
-const solutionTextSelector2 = "#editor > div.flex.flex-1.flex-col.overflow-hidden > div.flex-1.overflow-hidden > div > div > div.overflow-guard > div.monaco-scrollable-element.editor-scrollable.vs > div.lines-content.monaco-editor-background > div.view-lines.monaco-mouse-cursor-text"
-
 function get_problem_text() {
     const problemTextDiv = document.querySelector(problemTextSelector);
     let textList = [];
