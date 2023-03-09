@@ -5,24 +5,77 @@ function pollDOM () {
     const rightPanel = document.querySelector(rightPanelSelector);
     const codePanel = document.querySelector(codePanelSelector);
     const consoleButton = document.querySelector(consoleButtonSelector);
+    const submitButton = document.querySelector(submitButtonSelector);
+    const runButton = document.querySelector(runButtonSelector);
 
-    if (rightPanel !== null && codePanel !== null && consoleButton != null) {
+    if (
+      rightPanel !== null &&
+      codePanel !== null &&
+      consoleButton != null &&
+      submitButton != null &&
+      runButton != null
+      ) {
+        // move code panel inside new div
         const codePanelContainer = document.createElement("div");
         codePanelContainer.style = "height: 100%;";
         codePanelContainer.appendChild(codePanel);
         rightPanel.appendChild(codePanelContainer);
+
+        // add resize bar and chat
         const resizeBar = createResizeBar();
         const chatInterface = createChatInterface();
+        rightPanel.append(resizeBar, chatInterface);
+        jQuery.resizable(resizeBar.id, "h");
+
+        // add show/hide button to bottom menu
         const showHideButton = createShowHideButton(
           codePanelContainer, chatInterface, resizeBar
         );
-        rightPanel.append(resizeBar, chatInterface);
-        jQuery.resizable("leetcoachResizeBar", "h");
         consoleButton.insertAdjacentElement("afterend", showHideButton);
+
+        submitButton.addEventListener(
+          "click", () => {
+            setTimeout(replaceButtonOnSubmit, 50, showHideButton)
+          }
+        );
+        runButton.addEventListener(
+          "click", () => {
+            setTimeout(replaceButtonOnRun, 50, showHideButton)
+          }
+        );
+
     } else {
         setTimeout(pollDOM, 300); // try again in 300 milliseconds
         console.log("Leetcoach waiting for page load...");
     }
+}
+
+function replaceButtonOnSubmit(showHideButton) {
+  console.log("replace button on submit");
+  const consoleButton = document.querySelector(consoleButtonSelectorPostSubmit);
+  if (consoleButton !== null) {
+    console.log("hello");
+    console.log(showHideButton);
+    consoleButton.insertAdjacentElement("afterend", showHideButton);
+
+  } else {
+    console.log("goodbye");
+    setTimeout(replaceButtonOnSubmit, 50, showHideButton); // try again in 300 milliseconds
+  }
+}
+
+function replaceButtonOnRun(showHideButton) {
+  console.log("replace button on run");
+  const consoleButton = document.querySelector(consoleButtonSelectorPostRun);
+  if (consoleButton !== null) {
+    console.log("hello");
+    console.log(showHideButton);
+    consoleButton.insertAdjacentElement("afterend", showHideButton);
+
+  } else {
+    console.log("goodbye");
+    setTimeout(replaceButtonOnRun, 50, showHideButton); // try again in 300 milliseconds
+  }
 }
 
 // using resize bar disables the form repositioning
