@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Leetcoach",
   "description": "Leetcoach adds a chat window to Leetcode, allowing you to discuss your problem with chatGPT.",
-  "version": "0.0.1.0",
+  "version": "0.0.1.1",
   "action": {
     "default_popup": "popup.html",
     "default_icon": "images/leetcoach16.png"
