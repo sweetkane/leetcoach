@@ -268,7 +268,7 @@ function createTitle() {
   const subtitleText = document.createElement("div");
   subtitleText.style = "text-align: center";
   subtitleText.className = "mr-2 text-sm font-medium text-label-1 dark:text-dark-label-1";
-  subtitleText.innerText = "v0.0.0.1";
+  subtitleText.innerText = "v0.0.1.0";
   titleTextContainer.append(titleText, subtitleText);
   return titleTextContainer;
 }
