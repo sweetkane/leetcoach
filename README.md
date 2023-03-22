@@ -2,6 +2,7 @@
 
 ### Introduction:
 Leetcoach is a Chrome Extension that brings ChatGPT to Leetcode so users can seamlessly discuss the problem and their solution.
+
 Chrome Web Store Link: https://chrome.google.com/webstore/detail/leetcoach/gdcenglicnhmmmgmcplemgeifjhiipkj
 
 ### Features:
