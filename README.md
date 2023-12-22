@@ -1,9 +1,10 @@
-# Leetcoach
+# 🧑‍🏫🤖 Leetcoach 🧑‍🏫🤖
+_Disclaimer: I am not maintaining this project. As of 12/15/2023, Leetcoach no longer works due to changes in the Leetcode user interface._
 
 ### Introduction:
 Leetcoach is a Chrome Extension that brings ChatGPT to Leetcode so users can seamlessly discuss the problem and their solution.
 
-Disclaimer: As of 12/15/2023, Leetcoach no longer works due to changes in the Leetcode user interface.
+
 
 Chrome Web Store Link: https://chrome.google.com/webstore/detail/leetcoach/gdcenglicnhmmmgmcplemgeifjhiipkj
 
